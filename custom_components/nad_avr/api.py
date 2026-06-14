@@ -103,7 +103,7 @@ class NadClient:
                     import serial_asyncio  # type: ignore[import-not-found]
                 except ImportError as exc:
                     raise NadConnectionError(
-                        "pyserial-asyncio is required for RS-232 connections"
+                        "pyserial-asyncio-fast is required for RS-232 connections"
                     ) from exc
                 self._reader, self._writer = await asyncio.wait_for(
                     serial_asyncio.open_serial_connection(

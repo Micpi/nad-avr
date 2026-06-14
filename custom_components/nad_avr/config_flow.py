@@ -141,7 +141,7 @@ class NadAvrConfigFlow(ConfigFlow, domain=DOMAIN):
             if model:
                 detected_model = model
         except NadConnectionError:
-            _LOGGER.warning("NAD AVR is unreachable during setup, creating entry anyway")
+            _LOGGER.info("NAD AVR is unreachable during setup, creating entry anyway")
         except Exception as exc:  # pylint: disable=broad-except
             _LOGGER.debug("NAD setup probe failed: %s", exc)
         finally:
