@@ -1,0 +1,129 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure NAD AVR",
+        "data": {
+          "connection_type": "Connection type"
+        }
+      },
+      "telnet": {
+        "title": "NAD AVR over Telnet",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "name": "Name",
+          "model": "Model",
+          "query_all": "Query all NAD variables"
+        }
+      },
+      "rs232": {
+        "title": "NAD AVR over RS-232",
+        "data": {
+          "serial_port": "Serial port",
+          "baudrate": "Baudrate",
+          "name": "Name",
+          "model": "Model",
+          "query_all": "Query all NAD variables"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This NAD AVR is already configured."
+    },
+    "error": {
+      "cannot_connect": "Failed to connect.",
+      "unknown": "Unexpected error."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "query_all": "Query all NAD variables"
+        }
+      }
+    }
+  },
+  "services": {
+    "send_command": {
+      "name": "Send command",
+      "description": "Send a raw NAD protocol command.",
+      "fields": {
+        "entry_id": {
+          "name": "Config entry ID"
+        },
+        "command": {
+          "name": "Command"
+        }
+      }
+    },
+    "set_variable": {
+      "name": "Set variable",
+      "description": "Set any NAD protocol variable.",
+      "fields": {
+        "entry_id": {
+          "name": "Config entry ID"
+        },
+        "variable": {
+          "name": "Variable"
+        },
+        "value": {
+          "name": "Value"
+        }
+      }
+    },
+    "query_variable": {
+      "name": "Query variable",
+      "description": "Query any NAD protocol variable.",
+      "fields": {
+        "entry_id": {
+          "name": "Config entry ID"
+        },
+        "variable": {
+          "name": "Variable"
+        }
+      }
+    },
+    "increment_variable": {
+      "name": "Increment variable",
+      "description": "Send the + operator to a NAD variable.",
+      "fields": {
+        "entry_id": {
+          "name": "Config entry ID"
+        },
+        "variable": {
+          "name": "Variable"
+        }
+      }
+    },
+    "decrement_variable": {
+      "name": "Decrement variable",
+      "description": "Send the - operator to a NAD variable.",
+      "fields": {
+        "entry_id": {
+          "name": "Config entry ID"
+        },
+        "variable": {
+          "name": "Variable"
+        }
+      }
+    },
+    "send_ir": {
+      "name": "Send IR",
+      "description": "Send an IR code through Main.IR, Main.IR1 or Main.IR2.",
+      "fields": {
+        "entry_id": {
+          "name": "Config entry ID"
+        },
+        "variable": {
+          "name": "IR variable"
+        },
+        "code": {
+          "name": "Code"
+        }
+      }
+    }
+  }
+}
+

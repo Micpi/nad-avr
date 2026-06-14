@@ -1,0 +1,71 @@
+send_command:
+  fields:
+    entry_id:
+      example: "01H..."
+      selector:
+        text:
+    command:
+      required: true
+      example: "Main.Power?"
+      selector:
+        text:
+set_variable:
+  fields:
+    entry_id:
+      selector:
+        text:
+    variable:
+      required: true
+      example: "Main.Volume"
+      selector:
+        text:
+    value:
+      required: true
+      example: "-35"
+      selector:
+        text:
+query_variable:
+  fields:
+    entry_id:
+      selector:
+        text:
+    variable:
+      required: true
+      example: "Main.Model"
+      selector:
+        text:
+increment_variable:
+  fields:
+    entry_id:
+      selector:
+        text:
+    variable:
+      required: true
+      example: "Main.Volume"
+      selector:
+        text:
+decrement_variable:
+  fields:
+    entry_id:
+      selector:
+        text:
+    variable:
+      required: true
+      example: "Main.Volume"
+      selector:
+        text:
+send_ir:
+  fields:
+    entry_id:
+      selector:
+        text:
+    variable:
+      default: "Main.IR"
+      selector:
+        text:
+    code:
+      required: true
+      example: "123"
+      selector:
+        text:
+

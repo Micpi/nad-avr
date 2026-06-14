@@ -1,0 +1,45 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurer NAD AVR",
+        "data": {
+          "connection_type": "Type de connexion"
+        }
+      },
+      "telnet": {
+        "title": "NAD AVR en Telnet",
+        "data": {
+          "host": "Adresse",
+          "port": "Port",
+          "name": "Nom",
+          "model": "Modele",
+          "query_all": "Interroger toutes les variables NAD"
+        }
+      },
+      "rs232": {
+        "title": "NAD AVR en RS-232",
+        "data": {
+          "serial_port": "Port serie",
+          "baudrate": "Vitesse",
+          "name": "Nom",
+          "model": "Modele",
+          "query_all": "Interroger toutes les variables NAD"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Cet ampli NAD est deja configure."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "query_all": "Interroger toutes les variables NAD"
+        }
+      }
+    }
+  }
+}
+
