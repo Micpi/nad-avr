@@ -19,10 +19,12 @@ async def async_setup_entry(
 ) -> None:
     """Set up NAD AVR number entities."""
     runtime = entry.runtime_data
+    coordinator = runtime.coordinator
     async_add_entities(
         NadVariableNumber(entry, runtime, variable)
         for variable, meta in COMMANDS.items()
         if "=" in meta["op"] and meta["range"] is not None
+        and coordinator.should_create_variable_entity(variable, CORE_VARIABLES)
     )
 
 

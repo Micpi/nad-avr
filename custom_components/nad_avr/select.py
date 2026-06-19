@@ -21,11 +21,14 @@ async def async_setup_entry(
 ) -> None:
     """Set up NAD AVR select entities."""
     runtime = entry.runtime_data
+    coordinator = runtime.coordinator
     entities = []
     for variable, meta in COMMANDS.items():
         if "=" not in meta["op"] or not meta["values"]:
             continue
         if set(meta["values"]) in _BOOLEAN_SETS:
+            continue
+        if not coordinator.should_create_variable_entity(variable, CORE_VARIABLES):
             continue
         entities.append(NadVariableSelect(entry, runtime, variable))
     async_add_entities(entities)
@@ -41,6 +44,13 @@ class NadVariableSelect(NadEntity, SelectEntity):
         self._attr_unique_id = f"{entry.entry_id}_{variable_slug(variable)}_select"
         self._attr_options = COMMANDS[variable]["values"]
         self._attr_entity_registry_enabled_default = variable in CORE_VARIABLES
+
+    @property
+    def options(self) -> list[str]:
+        """Return available options."""
+        if self.variable == "Main.ListeningMode":
+            return _listening_mode_options(self.coordinator.supported_variables)
+        return self._attr_options
 
     @property
     def current_option(self) -> str | None:
@@ -60,4 +70,23 @@ class NadVariableSelect(NadEntity, SelectEntity):
     def select_option(self, option: str) -> None:
         """Sync stub."""
         self.hass.async_create_task(self.async_select_option(option))
+
+
+def _listening_mode_options(supported_variables: set[str]) -> list[str]:
+    """Return listening mode options narrowed by supported signal families."""
+    variables = [
+        "Main.ListeningMode.Analog",
+        "Main.ListeningMode.Digital",
+        "Main.ListeningMode.DolbyDigital",
+        "Main.ListeningMode.DolbyDigital2ch",
+        "Main.ListeningMode.DTS",
+    ]
+    options: list[str] = []
+    for variable in variables:
+        if variable not in supported_variables:
+            continue
+        for option in COMMANDS[variable]["values"]:
+            if option not in options:
+                options.append(option)
+    return options or COMMANDS["Main.ListeningMode"]["values"]
 

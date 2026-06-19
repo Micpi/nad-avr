@@ -19,8 +19,11 @@ async def async_setup_entry(
 ) -> None:
     """Set up NAD AVR sensor entities."""
     runtime = entry.runtime_data
+    coordinator = runtime.coordinator
     async_add_entities(
-        NadVariableSensor(entry, runtime, variable) for variable in QUERYABLE_VARIABLES
+        NadVariableSensor(entry, runtime, variable)
+        for variable in QUERYABLE_VARIABLES
+        if coordinator.should_create_variable_entity(variable, CORE_VARIABLES)
     )
 
 

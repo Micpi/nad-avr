@@ -7,7 +7,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .commands import COMMANDS
 from .entity import NadEntity, variable_name, variable_slug
 
 
@@ -18,15 +17,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up NAD AVR button entities."""
     runtime = entry.runtime_data
-    entities = [NadReconnectButton(entry, runtime)]
-    for variable, meta in COMMANDS.items():
-        if "=" in meta["op"]:
-            continue
-        if "+" in meta["op"]:
-            entities.append(NadStepButton(entry, runtime, variable, "+"))
-        if "-" in meta["op"]:
-            entities.append(NadStepButton(entry, runtime, variable, "-"))
-    async_add_entities(entities)
+    async_add_entities([NadReconnectButton(entry, runtime)])
 
 
 class NadReconnectButton(NadEntity, ButtonEntity):

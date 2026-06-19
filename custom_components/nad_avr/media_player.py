@@ -90,6 +90,8 @@ class NadAvrMediaPlayer(NadEntity, MediaPlayerEntity):
             "audio_mode": data.get("Main.AudioMode"),
             "video_mode": data.get("Main.VideoMode"),
             "raw_volume_db": data.get("Main.Volume"),
+            "query_all_enabled": self.coordinator.query_all,
+            "supported_variable_count": len(self.coordinator.supported_variables),
         }
 
     async def async_turn_on(self) -> None:

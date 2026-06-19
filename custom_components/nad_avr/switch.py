@@ -23,9 +23,12 @@ async def async_setup_entry(
 ) -> None:
     """Set up NAD AVR switch entities."""
     runtime = entry.runtime_data
+    coordinator = runtime.coordinator
     entities = []
     for variable, meta in COMMANDS.items():
         if "=" not in meta["op"] or set(meta["values"]) not in _BOOLEAN_SETS:
+            continue
+        if not coordinator.should_create_variable_entity(variable, CORE_VARIABLES):
             continue
         entities.append(NadVariableSwitch(entry, runtime, variable))
     async_add_entities(entities)

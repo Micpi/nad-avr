@@ -36,6 +36,17 @@ class NadDataUpdateCoordinator(DataUpdateCoordinator[dict[str, str]]):
         self.query_all = query_all
         self.client.register_callback(self._handle_push_update)
 
+    @property
+    def supported_variables(self) -> set[str]:
+        """Return variables that have answered at least once."""
+        return set((self.data or self.client.state).keys())
+
+    def should_create_variable_entity(self, variable: str, core_variables: set[str]) -> bool:
+        """Return whether an entity should be created for a protocol variable."""
+        if self.query_all:
+            return variable in self.supported_variables
+        return variable in core_variables
+
     @callback
     def _handle_push_update(self, state: dict[str, str]) -> None:
         """Publish state received by the protocol listener."""
