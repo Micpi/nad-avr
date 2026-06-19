@@ -52,6 +52,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass,
         client,
         entry.options.get(CONF_QUERY_ALL, entry.data.get(CONF_QUERY_ALL, DEFAULT_QUERY_ALL)),
+        entry.data.get(CONF_MODEL, MODEL_AUTO),
     )
 
     await coordinator.async_config_entry_first_refresh()

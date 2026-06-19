@@ -2,10 +2,10 @@
 
 [![HACS](https://img.shields.io/badge/HACS-Custom%20Integration-orange?style=for-the-badge)](https://hacs.xyz)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024.1%2B-blue?style=for-the-badge&logo=home-assistant)](https://www.home-assistant.io/)
-[![Version](https://img.shields.io/badge/Version-v0.1.5-0EA5E9?style=for-the-badge)](https://github.com/Micpi/nad-avr/releases/latest)
+[![Version](https://img.shields.io/badge/Version-v0.1.6-0EA5E9?style=for-the-badge)](https://github.com/Micpi/nad-avr/releases/latest)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=000000)](https://buymeacoffee.com/mickaelpila)
 
-Home Assistant custom integration for NAD T187, T777 and T787 home cinema amplifiers using the official NAD RS-232 / Ethernet ASCII protocol.
+Home Assistant custom integration for NAD T187, T758, T777 and T787 home cinema amplifiers using the official NAD RS-232 / Ethernet ASCII protocol.
 
 ## Installation Via HACS
 
@@ -20,6 +20,8 @@ Home Assistant custom integration for NAD T187, T777 and T787 home cinema amplif
 ## Features
 
 - UI configuration flow with Telnet or RS-232 transport.
+- Static model capability profiles combined with runtime probing.
+- Home Assistant diagnostics export for probed, supported and profile-possible variables.
 - Main `media_player` entity for power, mute, volume and source.
 - Complete generic command surface from the NAD API documents:
   - 276 protocol variables
@@ -70,4 +72,6 @@ data:
 ## Notes
 
 The NAD protocol sends and receives ASCII commands in the form `Prefix.Variable?`, `Prefix.Variable=value`, `Prefix.Variable+` and `Prefix.Variable-`, wrapped with carriage returns. Ethernet and RS-232 use the same command set.
+
+NAD does not expose a universal "list capabilities" command. The integration therefore uses model profiles as hints, then trusts the variables that actually answer during the startup probe. Enable `query_all` from the integration options when you want to discover every variable that a receiver answers.
 

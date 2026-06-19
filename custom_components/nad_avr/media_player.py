@@ -11,7 +11,7 @@ from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import SOURCE_MAX, SOURCE_MIN, VOLUME_MAX_DB, VOLUME_MIN_DB
+from .const import SOURCE_MIN, VOLUME_MAX_DB, VOLUME_MIN_DB
 from .entity import NadEntity
 
 SUPPORT_NAD = (
@@ -78,7 +78,8 @@ class NadAvrMediaPlayer(NadEntity, MediaPlayerEntity):
     @property
     def source_list(self) -> list[str]:
         """Return available source labels."""
-        return [f"Source {source}" for source in range(SOURCE_MIN, SOURCE_MAX + 1)]
+        source_max = self.coordinator.model_profile.source_count
+        return [f"Source {source}" for source in range(SOURCE_MIN, source_max + 1)]
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
@@ -92,6 +93,7 @@ class NadAvrMediaPlayer(NadEntity, MediaPlayerEntity):
             "raw_volume_db": data.get("Main.Volume"),
             "query_all_enabled": self.coordinator.query_all,
             "supported_variable_count": len(self.coordinator.supported_variables),
+            "profile_model": self.coordinator.model_profile.model,
         }
 
     async def async_turn_on(self) -> None:
