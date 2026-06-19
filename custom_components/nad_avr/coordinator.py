@@ -15,6 +15,10 @@ from .const import CORE_VARIABLES, DEFAULT_SCAN_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+CORE_COMMAND_DELAY = 0.04
+FULL_COMMAND_DELAY = 0.04
+SCAN_SETTLE_TIME = 1.0
+
 
 class NadDataUpdateCoordinator(DataUpdateCoordinator[dict[str, str]]):
     """Coordinator that keeps the NAD variable cache in Home Assistant."""
@@ -34,12 +38,14 @@ class NadDataUpdateCoordinator(DataUpdateCoordinator[dict[str, str]]):
         )
         self.client = client
         self.query_all = query_all
+        self._probe_complete = False
+        self._supported_variables: set[str] = set()
         self.client.register_callback(self._handle_push_update)
 
     @property
     def supported_variables(self) -> set[str]:
         """Return variables that have answered at least once."""
-        return set((self.data or self.client.state).keys())
+        return self._supported_variables | set((self.data or self.client.state).keys())
 
     def should_create_variable_entity(self, variable: str, core_variables: set[str]) -> bool:
         """Return whether an entity should be created for a protocol variable."""
@@ -56,9 +62,27 @@ class NadDataUpdateCoordinator(DataUpdateCoordinator[dict[str, str]]):
         """Refresh data from the AVR."""
         try:
             await self.client.connect()
-            if self.query_all:
-                return await self.client.query_many(QUERYABLE_VARIABLES)
-            await self.client.query_many(_core_query_variables())
+            if not self._probe_complete:
+                variables = QUERYABLE_VARIABLES if self.query_all else _core_query_variables()
+                await self.client.scan_many(
+                    variables,
+                    command_delay=FULL_COMMAND_DELAY if self.query_all else CORE_COMMAND_DELAY,
+                    settle_time=SCAN_SETTLE_TIME,
+                )
+                self._supported_variables = set(self.client.state)
+                self._probe_complete = True
+                _LOGGER.info(
+                    "NAD capability probe found %d supported variables",
+                    len(self._supported_variables),
+                )
+                return self.client.state
+
+            variables = sorted(
+                variable
+                for variable in self.supported_variables
+                if variable in QUERYABLE_VARIABLES
+            )
+            await self.client.scan_many(variables, settle_time=SCAN_SETTLE_TIME)
             return self.client.state
         except NadConnectionError as exc:
             raise UpdateFailed(str(exc)) from exc

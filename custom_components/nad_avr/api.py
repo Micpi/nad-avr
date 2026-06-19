@@ -187,6 +187,21 @@ class NadClient:
                 _LOGGER.debug("NAD query failed for %s: %s", variable, exc)
         return self.state
 
+    async def scan_many(
+        self,
+        variables: list[str],
+        command_delay: float = 0.04,
+        settle_time: float = 1.0,
+    ) -> dict[str, str]:
+        """Send many query commands and let the listener collect responses."""
+        await self._ensure_connected()
+        for variable in variables:
+            await self._send(f"{variable}?")
+            if command_delay > 0:
+                await asyncio.sleep(command_delay)
+        await asyncio.sleep(settle_time)
+        return self.state
+
     async def _ensure_connected(self) -> None:
         if not self.is_connected:
             await self.connect()
