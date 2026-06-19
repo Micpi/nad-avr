@@ -203,10 +203,7 @@ class NadClient:
     async def _listen(self) -> None:
         while self._reader is not None:
             try:
-                raw = await self._reader.readline()
-                if not raw:
-                    raise NadConnectionError("Connection closed")
-                line = raw.decode("ascii", errors="ignore").strip()
+                line = await self._read_line()
                 if line:
                     self._handle_line(line)
             except asyncio.CancelledError:
@@ -217,6 +214,22 @@ class NadClient:
                 self._writer = None
                 self._fail_pending(exc)
                 break
+
+    async def _read_line(self) -> str:
+        """Read one NAD response terminated by CR, LF, or CRLF."""
+        if self._reader is None:
+            raise NadConnectionError("Not connected")
+
+        buffer = bytearray()
+        while True:
+            raw = await self._reader.read(1)
+            if not raw:
+                raise NadConnectionError("Connection closed")
+            if raw in (b"\r", b"\n"):
+                if buffer:
+                    return buffer.decode("ascii", errors="ignore").strip()
+                continue
+            buffer.extend(raw)
 
     def _handle_line(self, line: str) -> None:
         _LOGGER.debug("NAD RX: %s", line)

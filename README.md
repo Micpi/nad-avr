@@ -2,7 +2,7 @@
 
 [![HACS](https://img.shields.io/badge/HACS-Custom%20Integration-orange?style=for-the-badge)](https://hacs.xyz)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024.1%2B-blue?style=for-the-badge&logo=home-assistant)](https://www.home-assistant.io/)
-[![Version](https://img.shields.io/badge/Version-v0.1.0-0EA5E9?style=for-the-badge)](https://github.com/Micpi/nad-avr/releases/latest)
+[![Version](https://img.shields.io/badge/Version-v0.1.2-0EA5E9?style=for-the-badge)](https://github.com/Micpi/nad-avr/releases/latest)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=000000)](https://buymeacoffee.com/mickaelpila)
 
 Home Assistant custom integration for NAD T187, T777 and T787 home cinema amplifiers using the official NAD RS-232 / Ethernet ASCII protocol.
