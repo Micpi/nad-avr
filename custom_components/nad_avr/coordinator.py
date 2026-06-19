@@ -11,7 +11,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import NadClient, NadConnectionError
 from .commands import QUERYABLE_VARIABLES
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
+from .const import CORE_VARIABLES, DEFAULT_SCAN_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -43,9 +43,9 @@ class NadDataUpdateCoordinator(DataUpdateCoordinator[dict[str, str]]):
 
     def should_create_variable_entity(self, variable: str, core_variables: set[str]) -> bool:
         """Return whether an entity should be created for a protocol variable."""
-        if self.query_all:
-            return variable in self.supported_variables
-        return variable in core_variables
+        if variable not in core_variables and not self.query_all:
+            return False
+        return variable in self.supported_variables
 
     @callback
     def _handle_push_update(self, state: dict[str, str]) -> None:
@@ -58,11 +58,7 @@ class NadDataUpdateCoordinator(DataUpdateCoordinator[dict[str, str]]):
             await self.client.connect()
             if self.query_all:
                 return await self.client.query_many(QUERYABLE_VARIABLES)
-            await self.client.query("Main.Model")
-            await self.client.query("Main.Power")
-            await self.client.query("Main.Volume")
-            await self.client.query("Main.Mute")
-            await self.client.query("Main.Source")
+            await self.client.query_many(_core_query_variables())
             return self.client.state
         except NadConnectionError as exc:
             raise UpdateFailed(str(exc)) from exc
@@ -71,4 +67,9 @@ class NadDataUpdateCoordinator(DataUpdateCoordinator[dict[str, str]]):
         """Release runtime resources."""
         self.client.unregister_callback(self._handle_push_update)
         await self.client.disconnect()
+
+
+def _core_query_variables() -> list[str]:
+    """Return core variables that can be queried."""
+    return sorted(variable for variable in CORE_VARIABLES if variable in QUERYABLE_VARIABLES)
 
